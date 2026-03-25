@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>Flutter 50 | Master Interview Kit</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --bg-gradient-start: #f8fafc;
+            --bg-gradient-end: #f1f5f9;
+            --surface: #ffffff;
+            --surface-elevated: #ffffff;
+            --border-alpha: rgba(0, 0, 0, 0.06);
+            --border-strong: #e9eef3;
+            --text-primary: #0a0c10;
+            --text-secondary: #334155;
+            --text-tertiary: #5b6e8c;
+            --accent-primary: #2563eb;
+            --accent-glow: rgba(37, 99, 235, 0.2);
+            --accent-secondary: #7c3aed;
+            --code-bg: #f1f5f9;
+            --card-shadow: 0 20px 35px -12px rgba(0, 0, 0, 0.07), 0 1px 2px rgba(0, 0, 0, 0.02);
+            --transition-bezier: cubic-bezier(0.2, 0.9, 0.4, 1.1);
+        }
+
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --bg-gradient-start: #030712;
+                --bg-gradient-end: #111827;
+                --surface: #111827;
+                --surface-elevated: #1f2937;
+                --border-alpha: rgba(255, 255, 255, 0.06);
+                --border-strong: #1e2a3e;
+                --text-primary: #f9fafb;
+                --text-secondary: #d1d5db;
+                --text-tertiary: #9ca3af;
+                --accent-primary: #3b82f6;
+                --accent-glow: rgba(59,130,246,0.25);
+                --code-bg: #0f172a;
+                --card-shadow: 0 20px 35px -12px rgba(0, 0, 0, 0.4);
+            }
+        }
+
+        body {
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            background: radial-gradient(ellipse at 20% 30%, var(--bg-gradient-start), var(--bg-gradient-end));
+            color: var(--text-primary);
+            line-height: 1.5;
+            scroll-behavior: smooth;
+        }
+
+        /* glassmorphism header */
+        .glass-header {
+            position: sticky;
+            top: 0;
+            z-index: 50;
+            backdrop-filter: blur(18px);
+            background: rgba(var(--surface-rgb, 255,255,255), 0.7);
+            border-bottom: 1px solid var(--border-alpha);
+            background-color: rgba(255,255,255,0.6);
+        }
+        @media (prefers-color-scheme: dark) {
+            .glass-header { background-color: rgba(17,24,39,0.7); }
+        }
+
+        .container {
+            max-width: 1440px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        .hero-section {
+            padding: 3rem 0 2rem;
+            text-align: center;
+        }
+        .badge-group {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            flex-wrap: wrap;
+            margin-bottom: 1.2rem;
+        }
+        .chip {
+            background: var(--surface);
+            border: 1px solid var(--border-strong);
+            padding: 0.3rem 1rem;
+            border-radius: 40px;
+            font-size: 0.75rem;
+            font-weight: 500;
+            letter-spacing: 0.2px;
+            backdrop-filter: blur(4px);
+            color: var(--text-secondary);
+        }
+        h1 {
+            font-size: 3.2rem;
+            font-weight: 800;
+            letter-spacing: -0.02em;
+            background: linear-gradient(145deg, var(--accent-primary), var(--accent-secondary));
+            background-clip: text;
+            -webkit-background-clip: text;
+            color: transparent;
+            margin-bottom: 0.5rem;
+        }
+        .subhead {
+            font-size: 1.1rem;
+            color: var(--text-tertiary);
+            max-width: 650px;
+            margin: 0 auto;
+        }
+
+        /* filter bar */
+        .filter-bar {
+            background: var(--surface);
+            border-radius: 80px;
+            padding: 0.5rem;
+            margin: 1.8rem 0 2rem;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 0.3rem;
+            border: 1px solid var(--border-strong);
+            backdrop-filter: blur(8px);
+            box-shadow: var(--card-shadow);
+        }
+        .filter-btn {
+            background: transparent;
+            border: none;
+            padding: 0.6rem 1.4rem;
+            font-weight: 600;
+            font-size: 0.85rem;
+            border-radius: 60px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            color: var(--text-secondary);
+            font-family: inherit;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .filter-btn i {
+            font-size: 0.9rem;
+        }
+        .filter-btn.active {
+            background: var(--accent-primary);
+            color: white;
+            box-shadow: 0 8px 18px -6px var(--accent-primary);
+        }
+        .filter-btn:hover:not(.active) {
+            background: var(--code-bg);
+            color: var(--accent-primary);
+        }
+
+        /* stats row */
+        .stats-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            flex-wrap: wrap;
+            margin-bottom: 1.5rem;
+            padding: 0 0.2rem;
+        }
+        .result-count {
+            font-weight: 500;
+            background: var(--surface);
+            padding: 0.3rem 1rem;
+            border-radius: 40px;
+            font-size: 0.8rem;
+            border: 1px solid var(--border-strong);
+        }
+
+        /* masonry grid (perfect cards) */
+        .questions-masonry {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
+            gap: 1.8rem;
+            margin-bottom: 4rem;
+        }
+
+        .question-card {
+            background: var(--surface);
+            border-radius: 28px;
+            border: 1px solid var(--border-strong);
+            transition: all 0.35s var(--transition-bezier);
+            backdrop-filter: blur(2px);
+            overflow: hidden;
+            position: relative;
+            box-shadow: var(--card-shadow);
+        }
+        .question-card:hover {
+            transform: translateY(-6px);
+            border-color: var(--accent-primary);
+            box-shadow: 0 25px 40px -12px rgba(0, 0, 0, 0.2);
+        }
+        .card-glow {
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(circle at top right, var(--accent-glow), transparent 70%);
+            opacity: 0;
+            transition: opacity 0.4s;
+            pointer-events: none;
+        }
+        .question-card:hover .card-glow {
+            opacity: 0.5;
+        }
+
+        .card-header {
+            padding: 1.3rem 1.5rem 0.6rem 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid var(--border-alpha);
+        }
+        .q-number {
+            font-size: 0.7rem;
+            font-weight: 700;
+            background: var(--code-bg);
+            padding: 0.2rem 0.8rem;
+            border-radius: 30px;
+            color: var(--accent-primary);
+            letter-spacing: 0.3px;
+        }
+        .category-tag {
+            font-size: 0.65rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            padding: 0.25rem 0.85rem;
+            border-radius: 40px;
+            background: rgba(37,99,235,0.12);
+            color: var(--accent-primary);
+        }
+        .category-tag.flutter { background: #0f67b320; color: #2c7be5; }
+        .category-tag.dart { background: #10b98120; color: #10b981; }
+        .category-tag.arch { background: #8b5cf620; color: #a78bfa; }
+        .category-tag.api { background: #f43f5e20; color: #f43f5e; }
+        .category-tag.state { background: #f9731620; color: #fb923c; }
+
+        .question-text {
+            padding: 1rem 1.5rem 0.2rem 1.5rem;
+            font-weight: 700;
+            font-size: 1.1rem;
+            line-height: 1.4;
+            color: var(--text-primary);
+        }
+        .answer-area {
+            padding: 0.2rem 1.5rem 1.5rem 1.5rem;
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+        }
+        .answer-content {
+            background: var(--code-bg);
+            border-radius: 20px;
+            padding: 1rem;
+            margin-top: 0.7rem;
+            border-left: 3px solid var(--accent-primary);
+        }
+        pre {
+            background: transparent;
+            overflow-x: auto;
+            font-size: 0.75rem;
+            font-family: 'JetBrains Mono', 'Fira Code', monospace;
+            color: var(--text-primary);
+        }
+        code {
+            font-family: 'JetBrains Mono', monospace;
+            background: var(--code-bg);
+            padding: 0.2rem 0.4rem;
+            border-radius: 10px;
+            font-size: 0.75rem;
+        }
+        .inline-code {
+            background: var(--code-bg);
+            padding: 0.2rem 0.4rem;
+            border-radius: 8px;
+            font-weight: 500;
+        }
+
+        footer {
+            text-align: center;
+            padding: 2rem 0 3rem;
+            border-top: 1px solid var(--border-alpha);
+            margin-top: 1rem;
+            color: var(--text-tertiary);
+            font-size: 0.8rem;
+        }
+
+        @media (max-width: 780px) {
+            .container { padding: 0 1.2rem; }
+            .questions-masonry { grid-template-columns: 1fr; gap: 1.2rem; }
+            h1 { font-size: 2.3rem; }
+            .filter-bar { border-radius: 40px; overflow-x: auto; justify-content: flex-start; }
+        }
+    </style>
+</head>
+<body>
+<div class="glass-header">
+    <div class="container">
+        <div class="hero-section">
+            <div class="badge-group">
+                <span class="chip"><i class="fas fa-mobile-alt"></i> Flutter 3.x</span>
+                <span class="chip"><i class="fas fa-layer-group"></i> Clean Arch</span>
+                <span class="chip"><i class="fas fa-code"></i> 50 Q&A</span>
+                <span class="chip"><i class="fas fa-bolt"></i> Interview Ready</span>
+            </div>
+            <h1>Flutter 50</h1>
+            <div class="subhead">Master mobile development · Design patterns · State management · API integration</div>
+        </div>
+    </div>
+</div>
+
+<div class="container">
+    <!-- premium filter row -->
+    <div class="filter-bar" id="filterBar">
+        <button class="filter-btn active" data-filter="all"><i class="fas fa-dharmachakra"></i> All questions</button>
+        <button class="filter-btn" data-filter="flutter"><i class="fab fa-flutter"></i> Flutter Core</button>
+        <button class="filter-btn" data-filter="dart"><i class="fas fa-code-branch"></i> Dart & Async</button>
+        <button class="filter-btn" data-filter="arch"><i class="fas fa-cubes"></i> Architecture</button>
+        <button class="filter-btn" data-filter="api"><i class="fas fa-cloud-sun"></i> REST & API</button>
+        <button class="filter-btn" data-filter="state"><i class="fas fa-brain"></i> State Mgmt</button>
+    </div>
+
+    <div class="stats-row">
+        <div class="result-count" id="resultCount"><i class="far fa-file-alt"></i> Loading...</div>
+        <div style="font-size: 0.75rem; color: var(--text-tertiary);"><i class="fas fa-lightbulb"></i> Hover cards for insights</div>
+    </div>
+
+    <div id="questionsGrid" class="questions-masonry"></div>
+    <footer>
+        <i class="fas fa-graduation-cap"></i> 50 essential Flutter interview questions — from StatelessWidget to Bloc, Clean Architecture & RESTful APIs<br>
+        <span style="opacity: 0.6;">Perfect revision tool · Mobile dev deep dive</span>
+    </footer>
+</div>
+
+<script>
+    // ---------- COMPLETE 50 QA DATASET (rich & detailed) ----------
+    const fullQA = [
+        { id:1, q:"តើ Flutter ជាអ្វី?", a:"Flutter ជា UI SDK របស់ Google បង្កើតដោយភាសា Dart សម្រាប់ cross-platform (iOS, Android, Web, Desktop)។ វាមាន Hot Reload, បណ្ណាល័យ widgets សម្បូរ និង rendering តាម Skia/Impeller ផ្តល់ performance ខ្ពស់។", cat:"flutter" },
+        { id:2, q:"StatelessWidget vs StatefulWidget?", a:"StatelessWidget: immutable, build() ហៅតែម្តង គ្មានការផ្លាស់ប្តូរ state។ StatefulWidget: មាន State object, អាចហៅ setState() ដើម្បី rebuild UI ពេល data ផ្លាស់ប្តូរ។", cat:"flutter" },
+        { id:3, q:"Flutter Rendering Flow?", a:"Widget Tree (config) → Element Tree (stateful/stateless elements) → RenderObject Tree (layout, painting)។ ការផ្លាស់ប្តូរ widget បង្កើត update នៅលើ element ហើយ render object គណនាឡើងវិញ។", cat:"flutter" },
+        { id:4, q:"BuildContext តួនាទី?", a:"BuildContext ជា handle ទៅកាន់ទីតាំង widget ក្នុង tree។ ប្រើសម្រាប់ស្វែងរក ancestor (Theme.of, Navigator.of, Provider.of)។", cat:"flutter" },
+        { id:5, q:"Flutter Architecture layers?", a:"Embedder (platform specific) → Engine (C++, Skia, Dart VM) → Framework (Dart: Material, Cupertino, Widgets, Rendering)។", cat:"flutter" },
+        { id:6, q:"Navigator & Route?", a:"Navigator គ្រប់គ្រង stack នៃ Route objects។ Route តំណាងឱ្យអេក្រង់។ Navigator.push() / pop() សម្រាប់ការផ្លាស់ប្តូរ។", cat:"flutter" },
+        { id:7, q:"setState() អត្ថប្រយោជន៍?", a:"ធ្វើឱ្យ framework ដឹងថា state ផ្លាស់ប្តូរ ហើយ rebuild widget subtree ដែលពាក់ព័ន្ធ។ សាមញ្ញសម្រាប់ local state ។", cat:"flutter" },
+        { id:8, q:"InheritedWidget ប្រើសម្រាប់?", a:"ចែកចាយ data ចុះក្រោម widget tree យ៉ាងមានប្រសិទ្ធភាព។ Provider និង Bloc ផ្អែកលើ InheritedWidget។", cat:"flutter" },
+        { id:9, q:"Key នៅ Flutter មានប្រយោជន៍?", a:"កំណត់អត្តសញ្ញាណ widget រក្សា state ពេល widgets ផ្លាស់ប្តូរទីតាំង។ ValueKey, ObjectKey, UniqueKey, GlobalKey។", cat:"flutter" },
+        { id:10, q:"Hot Reload vs Hot Restart?", a:"Hot Reload: រក្សា state, ចាក់ code ថ្មីភ្លាមៗ។ Hot Restart: ចាប់ផ្ដើមកម្មវិធីឡើងវិញ បាត់ state ទាំងអស់។", cat:"flutter" },
+        { id:11, q:"Layout System ដំណើរការ?", a:"Constraints go down, sizes go up, positions go down។ Parent កំណត់ constraints, child ជ្រើសរើស size, រួច parent កំណត់ទីតាំង។", cat:"flutter" },
+        { id:12, q:"Future & async/await?", a:"Future តំណាងឱ្យតម្លៃ asynchronous នាពេលអនាគត។ async/await សរសេរ non-blocking code ឲ្យដូច synchronous។", cat:"dart" },
+        { id:13, q:"Stream ប្រយោជន៍?", a:"Stream ផ្តល់ data ជាបន្តបន្ទាប់ (multiple values)។ ប្រើសម្រាប់ real-time, Firebase, WebSockets, BLoC។", cat:"dart" },
+        { id:14, q:"MediaQuery ប្រើសម្រាប់?", a:"ទទួលព័ត៌មានអេក្រង់: width, height, orientation, padding, text scale factor។ MediaQuery.of(context).size", cat:"flutter" },
+        { id:15, q:"ThemeData?", a:"កំណត់រចនាសម្ព័ន្ធ theme សកល (colors, typography, shapes) និងគាំទ្រ dark mode ។", cat:"flutter" },
+        { id:16, q:"MVC ជាអ្វី?", a:"Model-View-Controller: Model (data), View (UI), Controller (logic)។ បំបែកការងារប៉ុន្តែក្នុង Flutter គេនិយម MVVM/Bloc។", cat:"arch" },
+        { id:17, q:"MVVM?", a:"Model-View-ViewModel: ViewModel ផ្ទុក state & logic, View ស្តាប់ ViewModel តាមរយៈ streams/notifiers (Provider, Riverpod)។", cat:"arch" },
+        { id:18, q:"Clean Architecture layers?", a:"Presentation (UI/state) → Domain (Use cases, entities) → Data (Repositories, data sources)។ Dependency inversion: domain មិនអាស្រ័យលើ data layer។", cat:"arch" },
+        { id:19, q:"Repository Pattern?", a:"Abstraction រវាង data sources (API/DB) និង business logic។ ផ្តល់ interface ស្អាតសម្រាប់ data operations។", cat:"arch" },
+        { id:20, q:"Provider Pattern?", a:"State management ផ្អែកលើ InheritedWidget។ ChangeNotifierProvider, FutureProvider, StreamProvider — rebuild only watchers។", cat:"state" },
+        { id:21, q:"Bloc Pattern advantages?", a:"Business Logic Component: event-driven, state machine, highly testable, បំបែក UI ចេញពី business logic។ ប្រើ streams ។", cat:"state" },
+        { id:22, q:"Singleton Pattern?", a:"ធានា class មាន instance តែមួយ។ ប្រើសម្រាប់ ApiClient, Database helper, Logger។", cat:"arch" },
+        { id:23, q:"Dependency Injection (DI)?", a:"ផ្តល់ dependencies ពីខាងក្រៅ (constructor injection) ជំនួសឱ្យ class បង្កើតខ្លួនឯង។ ជួយ testing & flexibility។", cat:"arch" },
+        { id:24, q:"SOLID Principles?", a:"S: Single responsibility, O: Open/closed, L: Liskov substitution, I: Interface segregation, D: Dependency inversion — foundation of clean code។", cat:"arch" },
+        { id:25, q:"Separation of Concerns?", a:"បំបែកកូដជាស្រទាប់ (UI, logic, data) ដើម្បីងាយថែទាំ និង test។", cat:"arch" },
+        { id:26, q:"Data Layer តួនាទី?", a:"គ្រប់គ្រង data sources (REST API, local DB, cache) និង repository implementations។", cat:"arch" },
+        { id:27, q:"Domain Layer?", a:"ផ្ទុក business logic (use cases), entities, repository interfaces — independent of frameworks។", cat:"arch" },
+        { id:28, q:"Presentation Layer?", a:"UI (widgets) និង state management (Bloc/Cubit/Provider)។ បង្ហាញ data ទទួល user events។", cat:"arch" },
+        { id:29, q:"State Management types?", a:"Ephemeral (local): setState(); App state (global): Provider, Bloc, Riverpod, GetX។ ជម្រើសអាស្រ័យលើ complexity។", cat:"state" },
+        { id:30, q:"REST API?", a:"REpresentational State Transfer — architectural style ប្រើ HTTP verbs (GET, POST, PUT, DELETE) ផ្លាស់ប្តូរ data ជា JSON។", cat:"api" },
+        { id:31, q:"HTTP Methods?", a:"GET (retrieve), POST (create), PUT (full update), PATCH (partial update), DELETE (remove)។", cat:"api" },
+        { id:32, q:"JSON ជាអ្វី?", a:"JavaScript Object Notation — ទម្រង់ទិន្នន័យស្រាល ងាយអាន និង parse។", cat:"api" },
+        { id:33, q:"Dart Model Class User (id, name, email)", a:"class User { final int id; final String name; final String email; User({required this.id, required this.name, required this.email}); factory User.fromJson(Map<String,dynamic> json) => User(id: json['id'], name: json['name'], email: json['email']); Map<String,dynamic> toJson() => {'id':id,'name':name,'email':email}; }", cat:"api" },
+        { id:34, q:"API GET https://api.com/users", a:"Future<List<User>> fetchUsers() async { final res = await http.get(Uri.parse('https://api.com/users')); if(res.statusCode==200) { List<dynamic> body = jsonDecode(res.body); return body.map((j)=>User.fromJson(j)).toList(); } else throw Exception('failed'); }", cat:"api" },
+        { id:35, q:"API POST", a:"Future<User> createUser(String name, String email) async { final res = await http.post(Uri.parse('https://api.com/users'), headers:{'Content-Type':'application/json'}, body: jsonEncode({'name':name,'email':email})); if(res.statusCode==201) return User.fromJson(jsonDecode(res.body)); else throw Exception(); }", cat:"api" },
+        { id:36, q:"API PUT", a:"Future<User> updateUser(int id, String name, String email) async { final res = await http.put(Uri.parse('https://api.com/users/$id'), headers:{'Content-Type':'application/json'}, body: jsonEncode({'name':name,'email':email})); if(res.statusCode==200) return User.fromJson(jsonDecode(res.body)); else throw Exception(); }", cat:"api" },
+        { id:37, q:"API DELETE", a:"Future<void> deleteUser(int id) async { final res = await http.delete(Uri.parse('https://api.com/users/$id')); if(res.statusCode != 204) throw Exception('Delete failed'); }", cat:"api" },
+        { id:38, q:"Error Handling API", a:"ប្រើ try-catch ចាប់ SocketException (no internet), HttpException (4xx/5xx), FormatException (bad JSON) និងបង្ហាញ UI សមស្រប។", cat:"api" },
+        { id:39, q:"JWT Authentication", a:"JWT (JSON Web Token) ផ្ញើក្នុង header: 'Authorization: Bearer <token>' ដើម្បីផ្ទៀងផ្ទាត់សំណើ API។", cat:"api" },
+        { id:40, q:"Headers ក្នុង API", a:"Metadata: Content-Type (application/json), Authorization, Accept, User-Agent។ កំណត់ទម្រង់ និងសិទ្ធិ។", cat:"api" },
+        { id:41, q:"Dio vs HTTP", a:"Dio មាន Interceptors, retry, FormData, cancel tokens, global config ។ http client ស្រាលជាង។", cat:"api" },
+        { id:42, q:"Async UI Handling", a:"FutureBuilder / StreamBuilder សម្រាប់គ្រប់គ្រង loading, data, error states ពេលធ្វើ async operations។", cat:"flutter" },
+        { id:43, q:"Pagination API", a:"ប្រើ query parameters (page, limit) ឬ cursor-based ដើម្បីទាញ data ជាដុំៗ កាត់បន្ថយ load។", cat:"api" },
+        { id:44, q:"Local Database Flutter", a:"SharedPreferences (key-value), Hive (NoSQL), sqflite (SQLite), Floor (ORM), ObjectBox, Isar — អាស្រ័យលើតម្រូវការ។", cat:"flutter" },
+        { id:45, q:"Full Flow Architecture (Flutter + API)", a:"Presentation (Widget/Bloc) → Domain (UseCases) → Data (Repository) → DataSource (Dio) → Remote API។ Data returns via streams/futures ។", cat:"arch" },
+        { id:46, q:"Popular State Management", a:"Provider, Riverpod, Bloc/Cubit, GetX, MobX, ValueNotifier។ នីមួយៗមានករណីប្រើប្រាស់ខុសៗ។", cat:"state" },
+        { id:47, q:"Provider advantages", a:"សាមញ្ញ, rebuild only listeners, ផ្អែកលើ InheritedWidget, boilerplate តិច, សមស្របសម្រាប់ medium/large apps។", cat:"state" },
+        { id:48, q:"Bloc vs GetX ពេលណា?", a:"Bloc: complex apps, event sourcing, testability, large teams។ GetX: rapid dev, performance, less boilerplate, built-in DI & navigation។", cat:"state" },
+        { id:49, q:"StatefulWidget vs StatelessWidget recap", a:"StatelessWidget build once, no internal mutable state; StatefulWidget រក្សា state អាចផ្លាស់ប្តូរបានតាមពេលវេលា។", cat:"flutter" },
+        { id:50, q:"Hybrid vs Native pros/cons", a:"Hybrid (Flutter): code reuse, faster delivery, cost-effective, slight performance trade-off។ Native: best performance, full platform features, but 2 codebases & higher cost។", cat:"arch" }
+    ];
+
+    let currentFilter = "all";
+
+    function render() {
+        const filtered = fullQA.filter(item => currentFilter === "all" || item.cat === currentFilter);
+        const grid = document.getElementById("questionsGrid");
+        const countSpan = document.getElementById("resultCount");
+        countSpan.innerHTML = `<i class="far fa-file-alt"></i> ${filtered.length} premium insights`;
+
+        if(filtered.length === 0) {
+            grid.innerHTML = `<div style="grid-column:1/-1; text-align:center; padding:3rem;"><i class="fas fa-search"></i> No questions match this filter</div>`;
+            return;
+        }
+
+        const cardsHtml = filtered.map(q => {
+            let categoryClass = "";
+            if(q.cat === "flutter") categoryClass = "flutter";
+            else if(q.cat === "dart") categoryClass = "dart";
+            else if(q.cat === "arch") categoryClass = "arch";
+            else if(q.cat === "api") categoryClass = "api";
+            else if(q.cat === "state") categoryClass = "state";
+            
+            let answerHtml = `<div class="answer-content">${escapeHtml(q.a).replace(/`(.*?)`/g, '<code>$1</code>').replace(/\n/g, '<br>')}</div>`;
+            if(q.a.includes("class User") || q.a.includes("http.get") || q.a.includes("await http")) {
+                answerHtml = `<div class="answer-content"><pre><code>${escapeHtml(q.a)}</code></pre></div>`;
+            }
+            return `
+                <div class="question-card">
+                    <div class="card-glow"></div>
+                    <div class="card-header">
+                        <span class="q-number">#${q.id}</span>
+                        <span class="category-tag ${categoryClass}">${q.cat.toUpperCase()}</span>
+                    </div>
+                    <div class="question-text">${escapeHtml(q.q)}</div>
+                    <div class="answer-area">
+                        ${answerHtml}
+                    </div>
+                </div>
+            `;
+        }).join('');
+        grid.innerHTML = cardsHtml;
+    }
+
+    function escapeHtml(str) {
+        return str.replace(/[&<>]/g, function(m) {
+            if(m === '&') return '&amp;';
+            if(m === '<') return '&lt;';
+            if(m === '>') return '&gt;';
+            return m;
+        });
+    }
+
+    // filter event listeners
+    const btns = document.querySelectorAll(".filter-btn");
+    btns.forEach(btn => {
+        btn.addEventListener("click", () => {
+            const filterVal = btn.getAttribute("data-filter");
+            currentFilter = filterVal;
+            btns.forEach(b => b.classList.remove("active"));
+            btn.classList.add("active");
+            render();
+        });
+    });
+
+    render();
+</script>
+</body>
+</html>
